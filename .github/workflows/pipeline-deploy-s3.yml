@@ -8,18 +8,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
       - run: sudo apt-get install pandoc
       - run: pandoc README.md -f markdown -t html -s -o index.html
-      - run: ls -la 
+      - run: ls -la
       - uses: actions/upload-artifact@v4
         with:
           name: site
-          path: index.html
-
-
-
+          path: ./index.html
 
   deploy:
     needs: build
@@ -44,4 +42,4 @@ jobs:
           echo "BUCKET_S3=${{ vars.BUCKET_S3 }}" >> $GITHUB_ENV
 
       - run: ls -la
-      - run: aws s3 cp index.html s3://$BUCKET_S3 --recursive --acl public-read
+      - run: aws s3 cp ./index.html s3://$BUCKET_S3 --acl public-read
