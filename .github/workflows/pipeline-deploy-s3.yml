@@ -19,21 +19,29 @@ jobs:
           path: index.html
 
 
+
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment: test
-   
+
     steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: site
-        path: index.html
-    - env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-        AWS_EC2_METADATA_DISABLED: true
-        BUCKET_S3: ${{ vars.BUCKET_S3 }}
-    - run: ls -la
-    - run: aws s3 cp index.html s3://$BUCKET_S3 --recursive --acl public-read
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: .
+
+      - name: Set environment variables
+        run: |
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> $GITHUB_ENV
+          echo "AWS_EC2_METADATA_DISABLED=true" >> $GITHUB_ENV
+          echo "BUCKET_S3=${{ vars.BUCKET_S3 }}" >> $GITHUB_ENV
+
+      - run: ls -la
+      - run: aws s3 cp index.html s3://$BUCKET_S3 --recursive --acl public-read
