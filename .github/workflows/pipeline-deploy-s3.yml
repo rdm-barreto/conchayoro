@@ -2,17 +2,21 @@ name: pipeline-deploy-s3
 
 on:
   workflow_dispatch:
-    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - run: sudo apt-get install pandoc
-    - run: pandoc README.md -f markdown -t html -s -o index.html
-    - run: ls -la 
-    - uses: actions/upload-artifact@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Pandoc install
+      run: sudo apt-get install pandoc
+    - name: Converts md file to html file
+      run: pandoc README.md -f markdown -t html -s -o index.html
+    - name: Display all files
+      run: ls -la 
+    - name: Upload file
+      uses: actions/upload-artifact@v4
       with:
         name: site
         path: index.html
