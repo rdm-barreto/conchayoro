@@ -67,5 +67,5 @@ jobs:
           sudo pip install --upgrade setuptools
           sudo pip install --upgrade pip awsebcli
       - name: 'Initialize EB CLI'
-        run: eb init -p docker $STACK_NAME --region $AWS_REGION
+        run: eb init -p docker --region $AWS_REGION
       - run: eb deploy --verbose
