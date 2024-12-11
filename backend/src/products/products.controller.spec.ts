@@ -4,6 +4,7 @@ import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { Product } from './entities/product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 const product = {
   name: 'Product1',
@@ -13,6 +14,7 @@ const product = {
 };
 
 const createProductDto: CreateProductDto = product;
+const updateProductDto: UpdateProductDto = product;
 
 describe('ProductsController', () => {
   let productsService: ProductsService;
@@ -43,4 +45,15 @@ describe('ProductsController', () => {
       .mockImplementation(() => Promise.resolve(mockedResponseData));
     expect(await productsController.create(createProductDto)).toBe(mockedResponseData);
   });
+  
+  it('should update a product', async () => {
+    const mockedResponseData = product;
+    const id = '1';
+    jest
+    .spyOn(productsService, 'update')
+    .mockImplementation(() => Promise.resolve(mockedResponseData));
+    expect(await productsController.update(id, updateProductDto)).toBe(
+    mockedResponseData,
+    );
+    });
 });
